@@ -1,4 +1,13 @@
+extern crate alloc;
+use alloc::format;
+use alloc::string::String;
+use alloc::string::ToString;
+use alloc::vec::Vec;
 use noli::net::lookup_host;
+use noli::net::SocketAddr;
+use noli::net::TcpStream;
+use saba_core::error::Error;
+use saba_core::http::HttpResponse;
 
 pub struct HttpClient {}
 
@@ -24,7 +33,7 @@ impl HttpClient {
 
         let mut stream = match TcpStream::connect(socket_addr) {
             Ok(stream) => stream,
-            Erro(_) => {
+            Err(_) => {
                 return Err(Error::Network("Failed to connect to TCP stream".to_string(),))
             }
         };

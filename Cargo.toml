@@ -1,10 +1,20 @@
-workspace = { members = ["saba_core"] }
+workspace = { members = [ "net/wasabi","saba_core"] }
 [package]
 name = "saba"
 version = "0.1.0"
 edition = "2021"
 
+[features]
+defaut = ['wasabi']
+wasabi = ["dep:net_wasabi", "dep:noli"]
+
+[[bin]]
+name="saba"
+path= "src/main.rs"
+required-features = ["wasabi"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-noli = { git = "https://github.com/hikalium/wasabi.git", branch = "for_saba" }
+saba_core={path="./saba/core"}
+net_wasabi={path="./net/wasabi", optional=true}
+noli = { git = "https://github.com/hikalium/wasabi.git", branch = "for_saba", optional=true }

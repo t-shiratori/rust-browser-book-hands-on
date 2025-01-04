@@ -73,11 +73,14 @@ impl LayoutView {
     fn paint_node(node: &Option<Rc<RefCell<LayoutObject>>>, display_items: &mut Vec<DisplayItem>) {
         match node {
             Some(n) => {
+                // ノードの描画情報を取得し、描画情報リストに追加していく
                 display_items.extend(n.borrow_mut().paint());
 
+                // 子要素があれば再帰的に描画情報を取得する
                 let first_child = n.borrow().first_child();
                 Self::paint_node(&first_child, display_items);
 
+                // 次の兄弟要素があれば再帰的に描画情報を取得する
                 let next_sibling = n.borrow().next_sibling();
                 Self::paint_node(&next_sibling, display_items);
             }

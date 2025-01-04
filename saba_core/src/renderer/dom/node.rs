@@ -1,4 +1,4 @@
-use core::{cell::RefCell, str::FromStr};
+use core::{cell::RefCell, fmt::{Display, Formatter}, str::FromStr};
 use alloc::{format, rc::{Rc, Weak}, string::String, vec::Vec};
 use crate::renderer::html::attribute::Attribute;
 
@@ -14,7 +14,11 @@ impl Window {
             document: Rc::new(RefCell::new(Node::new(NodeKind::Document))),
         };
 
-        window.document.borrow_mut().set_window(Rc::downgrade(&Rc::new(RefCell::new(window.clone()))));
+        window
+            .document
+            .borrow_mut()
+            .set_window(Rc::downgrade(&Rc::new(RefCell::new(window.clone())))
+        );
 
         window
     }
@@ -160,6 +164,17 @@ impl Element {
     pub fn kind(&self) -> ElementKind {
         self.kind
     }
+
+    pub fn is_block_element(&self) -> bool {
+        match self.kind {
+            ElementKind::Body | ElementKind::H1 | ElementKind::H2 | ElementKind::P => true,
+            _ => false,
+        }
+    }
+
+    pub fn attributes(&self) -> Vec<Attribute> {
+        self.attributes.clone()
+    }
 }
 
 
@@ -195,4 +210,21 @@ impl FromStr for ElementKind {
     }
 }
 
+
+impl Display for ElementKind {
+    fn fmt(&self, f: &mut Formatter) -> core::fmt::Result {
+        let s = match self {
+            ElementKind::Html => "html",
+            ElementKind::Head => "head",
+            ElementKind::Style => "style",
+            ElementKind::Script => "script",
+            ElementKind::Body => "body",
+            ElementKind::H1 => "h1",
+            ElementKind::H2 => "h2",
+            ElementKind::P => "p",
+            ElementKind::A => "a",
+        };
+        write!(f, "{}", s)
+    }
+}
 

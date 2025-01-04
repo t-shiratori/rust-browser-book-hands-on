@@ -18,7 +18,7 @@ impl CssParser {
         }
     }
 
-    pub fn parse_stylesheed(&mut self) -> StyleSheet{
+    pub fn parse_stylesheet(&mut self) -> StyleSheet{
         let mut sheet = StyleSheet::new();
         sheet.set_rules(self.consume_list_of_rules());
         sheet
@@ -33,7 +33,7 @@ impl CssParser {
             };
 
             match token {
-                CssToken::Atkeyword(_keyword) => {
+                CssToken::AtKeyword(_keyword) => {
                     let _rule = self.consume_qualified_rule();
                 },
                 _=> {
@@ -47,6 +47,7 @@ impl CssParser {
         }
     }
 
+    /** cssの修飾ルールを解析する */
     fn consume_qualified_rule(&mut self) -> Option<QualifiedRule> {
         let mut rule = QualifiedRule::new();
         loop {
@@ -91,7 +92,7 @@ impl CssParser {
                 }
                 Selector::TypeSelector(ident.to_string())
             }
-            CssToken::Atkeyword(_keyword) => {
+            CssToken::AtKeyword(_keyword) => {
                 while self.t.peek() != Some(&CssToken::OpenCurly) {
                     self.t.next();
                 }
@@ -107,8 +108,10 @@ impl CssParser {
     }
 
 
+    /** 複数の宣言を解析する */
     fn consume_list_of_declarations(&mut self) -> Vec<Declaration> {
         let mut declarations = Vec::new();
+
         loop {
             let token = match self.t.peek() {
                 Some(t) => t,
@@ -123,7 +126,7 @@ impl CssParser {
                 CssToken::SemiColon => {
                     assert_eq!(self.t.next(), Some(CssToken::SemiColon));
                 },
-                CssToken::Ident(_) => {
+                CssToken::Ident(ref _ident) => {
                     if let Some(declaration) = self.consume_declaration() {
                         declarations.push(declaration);
                     }
@@ -268,7 +271,7 @@ mod tests {
     fn test_empty() {
         let style = "".to_string();
         let t = CssTokenizer::new(style);
-        let cssom = CssParser::new(t).parse_stylesheed();
+        let cssom = CssParser::new(t).parse_stylesheet();
 
         assert_eq!(cssom.rules.len(), 0);
     }
@@ -277,7 +280,7 @@ mod tests {
     fn test_one_rule() {
         let style = "p { color: red; }".to_string();
         let t = CssTokenizer::new(style);
-        let cssom = CssParser::new(t).parse_stylesheed();
+        let cssom = CssParser::new(t).parse_stylesheet();
 
         let mut rule = QualifiedRule::new();
         rule.set_selector(super::Selector::TypeSelector("p".to_string()));
@@ -301,7 +304,7 @@ mod tests {
     fn test_id_select() {
         let style = "#id { color: red; }".to_string();
         let t = CssTokenizer::new(style);
-        let cssom = CssParser::new(t).parse_stylesheed();
+        let cssom = CssParser::new(t).parse_stylesheet();
 
         let mut rule = QualifiedRule::new();
         rule.set_selector(super::Selector::IdSelector("id".to_string()));
@@ -325,7 +328,7 @@ mod tests {
     fn test_class_select() {
         let style = ".class { color: red; }".to_string();
         let t = CssTokenizer::new(style);
-        let cssom = CssParser::new(t).parse_stylesheed();
+        let cssom = CssParser::new(t).parse_stylesheet();
 
         let mut rule = QualifiedRule::new();
         rule.set_selector(super::Selector::ClassSelector("class".to_string()));
@@ -349,7 +352,7 @@ mod tests {
     fn test_multiple_rules() {
         let style = "p { content: \"Hey\"; } h1 { font-size: 40; color: blue; }".to_string();
         let t = CssTokenizer::new(style);
-        let cssom = CssParser::new(t).parse_stylesheed();
+        let cssom = CssParser::new(t).parse_stylesheet();
 
         let mut rule1 = QualifiedRule::new();
         rule1.set_selector(super::Selector::TypeSelector("p".to_string()));

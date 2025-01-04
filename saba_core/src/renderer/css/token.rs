@@ -15,7 +15,7 @@ pub enum CssToken {
     CloseCurly,
     Ident(String),
     StringToken(String),
-    Atkeyword(String)
+    AtKeyword(String)
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -157,7 +157,7 @@ impl Iterator for CssTokenizer {
                     && self.input[self.pos + 2].is_alphabetic()
                     && self.input[self.pos + 3].is_alphabetic() {
                         self.pos += 1;
-                        let t = CssToken::Atkeyword(self.consume_ident_token());
+                        let t = CssToken::AtKeyword(self.consume_ident_token());
                         self.pos -= 1;
                         t
                     } else {
@@ -181,11 +181,11 @@ impl Iterator for CssTokenizer {
 }
 
 
+
 #[cfg(test)]
 mod tests {
+    use super::*;
     use alloc::string::ToString;
-    use super::{CssToken, CssTokenizer};
-
 
     #[test]
     fn test_empty() {
@@ -205,11 +205,50 @@ mod tests {
             CssToken::Colon,
             CssToken::Ident("red".to_string()),
             CssToken::SemiColon,
-            CssToken::CloseCurly
+            CssToken::CloseCurly,
         ];
         for e in expected {
             assert_eq!(Some(e.clone()), t.next());
-        };
+        }
+        assert!(t.next().is_none());
+    }
+
+    #[test]
+    fn test_id_selector() {
+        let style = "#id { color: red; }".to_string();
+        let mut t = CssTokenizer::new(style);
+        let expected = [
+            CssToken::HashToken("#id".to_string()),
+            CssToken::OpenCurly,
+            CssToken::Ident("color".to_string()),
+            CssToken::Colon,
+            CssToken::Ident("red".to_string()),
+            CssToken::SemiColon,
+            CssToken::CloseCurly,
+        ];
+        for e in expected {
+            assert_eq!(Some(e.clone()), t.next());
+        }
+        assert!(t.next().is_none());
+    }
+
+    #[test]
+    fn test_class_selector() {
+        let style = ".class { color: red; }".to_string();
+        let mut t = CssTokenizer::new(style);
+        let expected = [
+            CssToken::Delim('.'),
+            CssToken::Ident("class".to_string()),
+            CssToken::OpenCurly,
+            CssToken::Ident("color".to_string()),
+            CssToken::Colon,
+            CssToken::Ident("red".to_string()),
+            CssToken::SemiColon,
+            CssToken::CloseCurly,
+        ];
+        for e in expected {
+            assert_eq!(Some(e.clone()), t.next());
+        }
         assert!(t.next().is_none());
     }
 
@@ -235,12 +274,11 @@ mod tests {
             CssToken::Colon,
             CssToken::Ident("blue".to_string()),
             CssToken::SemiColon,
-            CssToken::CloseCurly
+            CssToken::CloseCurly,
         ];
         for e in expected {
             assert_eq!(Some(e.clone()), t.next());
-        };
+        }
         assert!(t.next().is_none());
     }
-
 }

@@ -23,8 +23,10 @@ pub enum InsertionMode {
 #[derive(Debug, Clone)]
 pub struct HtmlParser {
     window: Rc<RefCell<Window>>,
+    /** 現在処理中のノードの状態（フェーズ） */
     mode: InsertionMode,
     original_insertion_mode: InsertionMode,
+    /** 現在開いている要素のスタック、閉じタグが見つかったものからポップしていく */
     stack_of_open_elements: Vec<Rc<RefCell<Node>>>,
     t: HtmlTokenizer,
 }
@@ -93,6 +95,8 @@ impl HtmlParser {
             Some(n) => n.clone(),
             None => return
         };
+
+        // 現在処理中の要素がテキストノードの場合は、テキストノードに文字を追加して終了
         if let NodeKind::Text(ref mut s) = current.borrow_mut().kind {
             s.push(c);
             return
@@ -102,16 +106,20 @@ impl HtmlParser {
             return
         }
 
+        // 現在処理中の要素がテキストノードじゃない場合は、新たに追加するテキストノードを作成
         let node = Rc::new(RefCell::new(self.create_char(c)));
 
         if current.borrow().first_child().is_some() {
             current.borrow_mut().first_child().unwrap().borrow_mut().set_next_sibling(Some(node.clone()));
             node.borrow_mut().set_previous_sibling(Rc::downgrade(&current.borrow().first_child().expect("failed to get first child"),));            
         } else {
+            // 強い参照を持つ最初の子要素を設定
             current.borrow_mut().set_first_child(Some(node.clone()));
         }
 
+        // 弱い参照を持つ最後の子要素を設定
         current.borrow_mut().set_last_child(Rc::downgrade(&node));
+        // 弱い参照を持つ親要素を設定
         node.borrow_mut().set_parent(Rc::downgrade(&current));
 
         self.stack_of_open_elements.push(node);
@@ -125,15 +133,20 @@ impl HtmlParser {
 
     fn insert_element(&mut self, tag:&str, attributes: Vec<Attribute>) {
         let window = self.window.borrow();
+
+        // 現在開いている要素スタックから最後の要素を取得
         let current = match self.stack_of_open_elements.last() {
             Some(n) => n.clone(),
             None => window.document()
         };
 
+        // 現在処理中の要素のノードを作成
         let node = Rc::new(RefCell::new(self.create_element(tag, attributes)));
         
+        // 現在処理中の要素に子要素がある場合
         if current.borrow().first_child().is_some() {
             let mut last_sibling = current.borrow().first_child();
+            // 子要素の兄弟要素の最後の要素を取得するためのループ
             loop {
                 last_sibling = match last_sibling {
                     Some(ref node) => {
@@ -150,10 +163,13 @@ impl HtmlParser {
             last_sibling.unwrap().borrow_mut().set_next_sibling(Some(node.clone()));
             node.borrow_mut().set_previous_sibling(Rc::downgrade(&current.borrow().first_child().expect("failed to get first child")));
         } else {
+            // 強い参照を持つ最初の子要素を設定
             current.borrow_mut().set_first_child(Some(node.clone()));
         }
 
+        // 弱い参照を持つ最後の子要素を設定
         current.borrow_mut().set_last_child(Rc::downgrade(&node));
+        // 弱い参照を持つ親要素を設定
         node.borrow_mut().set_parent(Rc::downgrade(&current));
         self.stack_of_open_elements.push(node);
     }

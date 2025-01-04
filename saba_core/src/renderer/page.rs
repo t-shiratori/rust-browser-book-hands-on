@@ -29,13 +29,19 @@ impl Page {
     }
 
     pub fn receive_response(&mut self, response: HttpResponse) {
+        // DOMとCSSOMを作成する
         self.create_frame(response.body());
 
+        // DOMとCSSOMからレイアウトツリーを作成する
         self.set_layout_view();
 
+        // レイアウトツリーから描画ツリーを作成する
         self.paint_tree();
     }
 
+    /*
+     * DOMとCSSOMを作成する
+     */
     fn create_frame(&mut self, html: String) {
         let html_tokenizer = HtmlTokenizer::new(html);
         let frame = HtmlParser::new(html_tokenizer).construct_tree();
@@ -49,6 +55,9 @@ impl Page {
         self.style = Some(cssom);
     }
 
+    /*
+     * DOMとCSSOMからレイアウトツリーを作成する
+     */
     fn set_layout_view(&mut self) {
         let dom = match &self.frame {
             Some(frame) => frame.borrow().document(),

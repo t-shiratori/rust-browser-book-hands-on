@@ -63,6 +63,7 @@ impl  Url {
         let url_parts: Vec<&str> = self.url.trim_start_matches("http://").splitn(2, "/").collect();
 
         if let Some(index) = url_parts[0].find(":") {
+            // コロン以降の文字列を返す
             url_parts[0][index + 1..].to_string()
         } else {
             "80".to_string()
@@ -73,6 +74,7 @@ impl  Url {
         let url_parts: Vec<&str> = self.url.trim_start_matches("http://").splitn(2, "/").collect();
 
         if let Some(index) = url_parts[0].find(":") {
+            // コロンより前の文字列を返す
             url_parts[0][..index].to_string()
         } else {
             url_parts[0].to_string()

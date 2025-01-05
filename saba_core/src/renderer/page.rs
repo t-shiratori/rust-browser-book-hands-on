@@ -1,6 +1,6 @@
 use core::cell::RefCell;
-use alloc::{rc::{Rc, Weak}, string::{String, ToString}, vec::Vec};
-use crate::{browser::Browser, display_item::DisplayItem, http::HttpResponse, utils::convert_dom_to_string};
+use alloc::{rc::{Rc, Weak}, string::String, vec::Vec};
+use crate::{browser::Browser, display_item::DisplayItem, http::HttpResponse};
 use super::{css::{cssom::{CssParser, StyleSheet}, token::CssTokenizer}, dom::{api::get_style_content, node::Window}, html::{parser::HtmlParser, token::HtmlTokenizer}, layout::layout_view::LayoutView};
 
 

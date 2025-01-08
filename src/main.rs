@@ -87,7 +87,7 @@ fn main() -> u64 {
 
     // アプリの実行を開始
     match ui.borrow_mut().start(handle_url) {
-        Ok(_) => (),
+        Ok(_) => {},
         Err(e) => {
             println!("browser fails to start: {:?}", e);
             return 1;

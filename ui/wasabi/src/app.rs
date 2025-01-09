@@ -61,7 +61,7 @@ impl WasabiUI {
 
     fn setup(&mut self) -> Result<(), Error> {
        if let Err(error) = self.setup_toolbar() {
-           return Err(Error::InvaledUI(
+           return Err(Error::InvalidUI(
             format!("failed to initialize a toolbar with error: {:?}", 
             error
             )));
@@ -290,7 +290,7 @@ impl WasabiUI {
             CONTENT_AREA_WIDTH, 
             CONTENT_AREA_HEIGHT -2
         ).is_err() {
-                return Err(Error::InvaledUI(
+                return Err(Error::InvalidUI(
                     "failed to clear content area".to_string(),
                 ));
         }
@@ -309,7 +309,7 @@ impl WasabiUI {
             WINDOW_WIDTH - 76, 
             ADDRESSBAR_HEIGHT -2
         ).is_err() {
-            return Err(Error::InvaledUI("failed to fill address bar".to_string()));
+            return Err(Error::InvalidUI("failed to fill address bar".to_string()));
         }
 
         // input_urlをアドレスバーに描画
@@ -321,7 +321,7 @@ impl WasabiUI {
             StringSize::Medium, /*underline=*/
             false
         ).is_err() {
-            return Err(Error::InvaledUI("failed to draw address bar".to_string()));
+            return Err(Error::InvalidUI("failed to draw address bar".to_string()));
         }
 
         // アドレスバーの部分の画面を更新する
@@ -347,7 +347,7 @@ impl WasabiUI {
             WINDOW_WIDTH - 76,
             ADDRESSBAR_HEIGHT - 2
         ).is_err() {
-            return Err(Error::InvaledUI("failed to fill address bar".to_string()));
+            return Err(Error::InvalidUI("failed to fill address bar".to_string()));
         }
         
         // アドレスバーの部分の画面を更新する
@@ -387,7 +387,7 @@ impl WasabiUI {
                         convert_font_size(style.font_size()),
                         style.text_decoration() == TextDecoration::Underline,
                     ).is_err(){
-                        return Err(Error::InvaledUI("failed to draw a string".to_string()))
+                        return Err(Error::InvalidUI("failed to draw a string".to_string()))
                     }
                 }
                 DisplayItem::Rect {
@@ -402,7 +402,7 @@ impl WasabiUI {
                         layout_size.width(),
                         layout_size.height()
                     ).is_err() {
-                        return Err(Error::InvaledUI("failed to draw a string".to_string()))
+                        return Err(Error::InvalidUI("failed to draw a string".to_string()))
                     }
                 }
             }

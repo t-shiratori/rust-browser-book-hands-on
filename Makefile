@@ -49,3 +49,12 @@ hexdump : build
 .PHONY : run
 run :
 	make -C ../../ run
+
+.PHONY : _rm
+_rm :
+	rm -r -f {build,target}
+
+.PHONY : start
+start : _rm
+	./run_on_wasabi.sh
+

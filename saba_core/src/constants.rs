@@ -14,7 +14,7 @@ pub static CONTENT_AREA_HEIGHT: i64 = WINDOW_HEIGHT - TITLE_BAR_HEIGHT - TOOLBAR
 
 pub static CHAR_WIDTH: i64 = 8;
 pub static CHAR_HEIGHT: i64 = 16;
-pub static CHAR_HEIGHT_WITH_PADDING: i64 = WINDOW_WIDTH + 4;
+pub static CHAR_HEIGHT_WITH_PADDING: i64 = CHAR_HEIGHT + 4;
 
 pub static WHITE: u32 = 0xffffff;
 pub static LIGHTGREY: u32 = 0xd3d3d3;

@@ -159,7 +159,7 @@ impl LayoutObject {
                 }
                 "display" => {
                     if let ComponentValue::Ident(value) = &declaratoin.value {
-                        let display_type = match DisplayType::form_str(&value) {
+                        let display_type = match DisplayType::from_str(&value) {
                             Ok(display_type) => display_type,
                             Err(_) => DisplayType::DisplayNone
                         };

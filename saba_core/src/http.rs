@@ -27,37 +27,6 @@ pub struct HttpResponse {
 
 impl HttpResponse {
 
-
-    pub fn version(&self) -> String {
-        self.version.clone()
-    }
-
-    pub fn status_code(&self) -> u32 {
-        self.status_code
-    }
-
-    pub fn reason(&self) -> String {
-        self.reason.clone()
-    }
-
-    pub fn headers(&self) -> Vec<Header> {
-        self.headers.clone()
-    }
-
-    pub fn body(&self) -> String {
-        self.body.clone()
-    }
-
-    pub fn header_value(&self, name: &str) -> Result<String, String> {
-        for h in &self.headers {
-            if h.name == name {
-                return Ok(h.value.clone())
-            }
-        }
-
-        Err(format!("failed to find {} in headers", name))
-    }
-
     pub fn new (raw_response: String) -> Result<Self, Error> {
         let preprocessed_response = raw_response.trim_start().replace("\n\r", "\n");
 
@@ -94,8 +63,35 @@ impl HttpResponse {
         })
     }
 
+    pub fn version(&self) -> String {
+        self.version.clone()
+    }
 
-   
+    pub fn status_code(&self) -> u32 {
+        self.status_code
+    }
+
+    pub fn reason(&self) -> String {
+        self.reason.clone()
+    }
+
+    pub fn headers(&self) -> Vec<Header> {
+        self.headers.clone()
+    }
+
+    pub fn body(&self) -> String {
+        self.body.clone()
+    }
+
+    pub fn header_value(&self, name: &str) -> Result<String, String> {
+        for h in &self.headers {
+            if h.name == name {
+                return Ok(h.value.clone())
+            }
+        }
+
+        Err(format!("failed to find {} in headers", name))
+    }
 
 }
 

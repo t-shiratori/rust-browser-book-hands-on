@@ -39,7 +39,7 @@ impl  Url {
         self.searchpart.clone()
     }
 
-    pub fn is_http(&mut self) -> bool {
+    pub fn is_http(&self) -> bool {
         if self.url.contains("http://") {
             return true
         }
@@ -60,7 +60,11 @@ impl  Url {
     }
 
     fn extract_port(&self) -> String {
-        let url_parts: Vec<&str> = self.url.trim_start_matches("http://").splitn(2, "/").collect();
+        let url_parts: Vec<&str> = self
+            .url
+            .trim_start_matches("http://")
+            .splitn(2, "/")
+            .collect();
 
         if let Some(index) = url_parts[0].find(":") {
             // コロン以降の文字列を返す
@@ -71,7 +75,11 @@ impl  Url {
     }
 
     fn extract_host(&self) -> String {
-        let url_parts: Vec<&str> = self.url.trim_start_matches("http://").splitn(2, "/").collect();
+        let url_parts: Vec<&str> = self
+            .url
+            .trim_start_matches("http://")
+            .splitn(2, "/")
+            .collect();
 
         if let Some(index) = url_parts[0].find(":") {
             // コロンより前の文字列を返す
@@ -82,7 +90,11 @@ impl  Url {
     }
 
     fn extract_path(&self) -> String {
-        let url_parts: Vec<&str> = self.url.trim_start_matches("http://").splitn(2, "/").collect();
+        let url_parts: Vec<&str> = self
+            .url
+            .trim_start_matches("http://")
+            .splitn(2, "/")
+            .collect();
 
         if url_parts.len() < 2 {
             return "".to_string();
@@ -94,7 +106,11 @@ impl  Url {
 
 
     fn extract_searchpart(&self) -> String {
-        let url_parts: Vec<&str> = self.url.trim_start_matches("http://").splitn(2, "/").collect(); 
+        let url_parts: Vec<&str> = self
+            .url
+            .trim_start_matches("http://")
+            .splitn(2, "/")
+            .collect(); 
 
         if url_parts.len() < 2 {
             return "".to_string();
@@ -102,7 +118,7 @@ impl  Url {
 
         let path_and_searchpart: Vec<&str> = url_parts[1].splitn(2, "?").collect();
         if path_and_searchpart.len() < 2 {
-            return "".to_string();
+            "".to_string()
         } else {
             path_and_searchpart[1].to_string()
         }

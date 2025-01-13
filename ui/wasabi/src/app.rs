@@ -171,7 +171,7 @@ impl WasabiUI {
         button,
         position
        }) = Api::get_mouse_cursor_info() {
-            println!("mouse position: {:?}", position);
+            //println!("mouse position: {:?}", position);
             
             self.window.flush_area(self.cursor.rect());
             self.cursor.set_position(position.x, position.y);

@@ -1,12 +1,10 @@
 use core::cell::RefCell;
-use core::mem::Discriminant;
 use alloc::format;
 use alloc::rc::Rc;
 use alloc::string::String;
 use noli::error::Result as OsResult;
 use noli::prelude::MouseEvent;
 use noli::prelude::SystemApi;
-use noli::print;
 use noli::println;
 use noli::rect::Rect;
 use noli::sys::wasabi::Api;

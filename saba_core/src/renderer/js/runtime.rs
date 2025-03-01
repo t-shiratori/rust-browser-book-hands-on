@@ -83,7 +83,7 @@ impl Display for RuntimeValue {
         let s = match self {
             RuntimeValue::Number(value) => format!("{}", value),
             RuntimeValue::StringLiteral(value) => value.to_string(),
-            RuntimeValue::HtmlElement { object, property } => {
+            RuntimeValue::HtmlElement { object, property: _ } => {
                 format!("HtmlElemet: {:#?}", object)
             }
         };

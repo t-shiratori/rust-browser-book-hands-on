@@ -1,7 +1,7 @@
 use core::cell::RefCell;
 use alloc::{rc::{Rc, Weak}, string::String, vec::Vec};
 use crate::{browser::Browser, display_item::DisplayItem, http::HttpResponse};
-use super::{css::{cssom::{CssParser, StyleSheet}, token::CssTokenizer}, dom::{api::get_style_content, node::{ElementKind, NodeKind, Window}}, html::{parser::HtmlParser, token::HtmlTokenizer}, layout::layout_view::LayoutView};
+use super::{css::{cssom::{CssParser, StyleSheet}, token::CssTokenizer}, dom::{api::{get_js_content, get_style_content}, node::{ElementKind, NodeKind, Window}}, html::{parser::HtmlParser, token::HtmlTokenizer}, js::{ast::JsParser, runtime::JsRuntime, token::JsLexer}, layout::layout_view::LayoutView};
 
 
 #[derive(Debug, Clone)]
@@ -32,11 +32,31 @@ impl Page {
         // DOMとCSSOMを作成する
         self.create_frame(response.body());
 
+        self.execute_js();
+
         // DOMとCSSOMからレイアウトツリーを作成する
         self.set_layout_view();
 
         // レイアウトツリーから描画ツリーを作成する
         self.paint_tree();
+    }
+
+    fn execute_js(&mut self) {
+        let dom = match &self.frame {
+            Some(frame) => frame.borrow().document(),
+            None => return
+        };
+
+        let js = get_js_content(dom.clone());
+        let lexer = JsLexer::new(js);
+
+        let mut parser = JsParser::new(lexer);
+        let ast = parser.parse_ast();
+
+        let mut runtime = JsRuntime::new(dom);
+
+        runtime.execute(&ast);
+
     }
 
     /*
